@@ -10,3 +10,10 @@ JUGADOR = {
     "u": "Usuario",
     "c": "Computadora"
 }
+
+SIMBOLO_ROL = "p", "l"
+
+ROL = {
+    "p": "policia",
+    "l": "ladron"
+}
