@@ -43,5 +43,3 @@ def piedra_papel_tijera(rol):
         if resultado != "Empate": break
     
     return resultado
-    
-# piedra_papel_tijera()

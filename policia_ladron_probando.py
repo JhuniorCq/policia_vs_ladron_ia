@@ -6,17 +6,17 @@ from constants import TABLERO, JUGADOR, ROL, CANTIDAD_CASAS
 filas, columnas = TABLERO
 
 # Posiciones iniciales de los jugadores
-jugador1 = [0, 0]  # Esquina superior izquierda / Policía
-jugador2 = [filas - 1, columnas - 1]  # Esquina inferior derecha / Ladrón
+posicion_policia = [0, 0]  # Esquina superior izquierda / Policía
+posicion_ladron = [filas - 1, columnas - 1]  # Esquina inferior derecha / Ladrón
 
 def imprimir_tablero():
     for i in range(filas):
         for j in range(columnas):
-            if [i, j] == jugador1:
+            if [i, j] == posicion_policia:
                 print("P", end=" ")
-            elif [i, j] == jugador2:
+            elif [i, j] == posicion_ladron:
                 print("L", end=" ")
-            elif [i, j] in posiciones_casas_robadas: # Creo que de ahí lo borraré
+            elif [i, j] in posiciones_casas_robadas:
                 print("X", end=" ")
             elif [i, j] in posiciones_casas:
                 print("C", end=" ")
@@ -109,33 +109,30 @@ while juego_en_curso:
         while pasos_disponibles > 0:
             print(f"\nPasos disponibles: {pasos_disponibles}")
             movimiento = input("\nUsuario (WASD): ").lower()
-            mover_jugador(jugador1 if rol_usuario == ROL[0] else jugador2, movimiento)
+            mover_jugador(posicion_policia if rol_usuario == ROL[0] else posicion_ladron, movimiento)
             pasos_disponibles -= 1
             
             os.system("cls")
-            
             mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol_usuario)
-            
             imprimir_tablero()
         
-        # Policía
-        if rol_usuario == ROL[0]:
-            if jugador1 == jugador2: 
-                print("\n\t\tEL POLICÍA HA ATRAPADO AL LADRÓN. HA GANADO EL LADRÓN.\n")
+        
+        if rol_usuario == ROL[0]: # Policía
+            if posicion_policia == posicion_ladron: 
+                print("\n\t\tEL POLICÍA HA ATRAPADO AL LADRÓN. HA GANADO EL POLICÍA.\n")
                 msvcrt.getch()
                 juego_en_curso = False
-        # Ladrón
-        else:
-            if jugador2 in posiciones_casas:
-                print(f"\n\t\tSe ha robado una casa en {jugador2}.\n")
+        else: # Ladrón
+            if posicion_ladron in posiciones_casas:
+                print(f"\n\t\tSe ha robado una casa en {posicion_ladron}.")
                 
-                casa_robada = jugador2
-                posiciones_casas_robadas.append(casa_robada.copy())
+                casa_robada = posicion_ladron.copy()
+                posiciones_casas_robadas.append(casa_robada)
 
                 msvcrt.getch()
                 
                 if len(posiciones_casas_robadas) == CANTIDAD_CASAS:
-                    print("\n\t\tSE HAN ROBADO TODAS LAS CASAS. HA GANADO EL LADRÓN.")
+                    print("\n\t\tSE HAN ROBADO TODAS LAS CASAS. HA GANADO EL LADRÓN.\n")
                     juego_en_curso = False
         
     else:
@@ -143,16 +140,29 @@ while juego_en_curso:
             print(f"\nPasos disponibles: {pasos_disponibles}")
             movimiento = input("\nComputadora (WASD): ").lower()
             # Acá en sí debemos hacer que la PC se mueva por sí sola
-            mover_jugador(jugador2 if rol_computadora == ROL[1] else jugador1, movimiento)
+            mover_jugador(posicion_ladron if rol_computadora == ROL[1] else posicion_policia, movimiento)
             pasos_disponibles -= 1
             
             os.system("cls")
-            
             mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol_computadora)
-            
             imprimir_tablero()
+
+        if rol_computadora == ROL[0]: # Policía
+            if posicion_policia == posicion_ladron:
+                print("\n\t\tEL POLICÍA HA ATRAPADO AL LADRÓN. HA GANADO EL POLICÍA.\n")
+                msvcrt.getch()
+                juego_en_curso = False
+        else: # Ladrón
+            if posicion_ladron in posiciones_casas:
+                print(f"\n\t\tSe ha robado una casa en {posicion_ladron}.")
+                
+                casa_robada = posicion_ladron.copy()
+                posiciones_casas_robadas.append(casa_robada)
+
+                msvcrt.getch()
+                
+                if len(posiciones_casas_robadas) == CANTIDAD_CASAS:
+                    print("\n\t\tSE HAN ROBADO TODAS LAS CASAS. HA GANADO EL LADRÓN.\n")
+                    juego_en_curso = False
     
     cont_turnos += 1
-
-
-# TODO: Falta hacer lo que hará la PC cuando sea policía o ladrón (en el Usuario ya está avanzado gran parte)
