@@ -118,7 +118,7 @@ while juego_en_curso:
                 msvcrt.getch()
                 juego_en_curso = False
         else: # Ladrón
-            if posicion_ladron in posiciones_casas:
+            if posicion_ladron in posiciones_casas and posicion_ladron not in posiciones_casas_robadas:
                 print(f"\n\t\tSe ha robado una casa en {posicion_ladron}.")
                 
                 casa_robada = posicion_ladron.copy()
@@ -148,7 +148,7 @@ while juego_en_curso:
                 msvcrt.getch()
                 juego_en_curso = False
         else: # Ladrón
-            if posicion_ladron in posiciones_casas:
+            if posicion_ladron in posiciones_casas and posicion_ladron not in posiciones_casas_robadas:
                 print(f"\n\t\tSe ha robado una casa en {posicion_ladron}.")
                 
                 casa_robada = posicion_ladron.copy()
@@ -161,5 +161,3 @@ while juego_en_curso:
                     juego_en_curso = False
     
     cont_turnos += 1
-    
-# TODO: Hacer que no se pueda robar 2 veces la misma casa
