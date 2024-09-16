@@ -1,6 +1,6 @@
 import os, msvcrt, random
 from piedra_papel_tijera_probando import piedra_papel_tijera
-from constants import TABLERO, JUGADOR, SIMBOLO_ROL, CANTIDAD_CASAS
+from constants import TABLERO, JUGADOR, ROL, CANTIDAD_CASAS
 
 # Dimensiones del tablero
 filas, columnas = TABLERO
@@ -40,8 +40,8 @@ def realizar_pasos():
 
 def mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol):
     print(f"\n\t\tPOLICÍA VS LADRÓN -> Turno N°{cont_turnos}")
-    print(f"\n- Turno: {turno}\n- Opción escogida: {opcion}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == SIMBOLO_ROL[0] else "Ladrón"}")
-    if rol == SIMBOLO_ROL[1]:
+    print(f"\n- Turno: {turno}\n- Opción escogida: {opcion}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == ROL[0] else "Ladrón"}")
+    if rol == ROL[1]:
         print(f"- Casas robadas: {posiciones_casas_robadas}\n")
     
     
@@ -71,11 +71,11 @@ def obtener_roles():
     print("\n\t\tESCOGE TU ROL")
     rol_usuario = input("\n- Para ser policía escribe (p) y para ser ladrón escribe (l): ").lower()
     
-    while rol_usuario not in SIMBOLO_ROL:
+    while rol_usuario not in ROL:
         print("\n\tElección no válida. Intenta de nuevo.")
         rol_usuario = input("\n- Para ser policía escribe (p) y para ser ladrón escribe (l): ").lower()
         
-    rol_computadora = SIMBOLO_ROL[1] if rol_usuario == SIMBOLO_ROL[0] else SIMBOLO_ROL[0]
+    rol_computadora = ROL[1] if rol_usuario == ROL[0] else ROL[0]
     
     return rol_usuario, rol_computadora
 
@@ -109,7 +109,7 @@ while juego_en_curso:
         while pasos_disponibles > 0:
             print(f"\nPasos disponibles: {pasos_disponibles}")
             movimiento = input("\nUsuario (WASD): ").lower()
-            mover_jugador(jugador1 if rol_usuario == SIMBOLO_ROL[0] else jugador2, movimiento)
+            mover_jugador(jugador1 if rol_usuario == ROL[0] else jugador2, movimiento)
             pasos_disponibles -= 1
             
             os.system("cls")
@@ -119,8 +119,7 @@ while juego_en_curso:
             imprimir_tablero()
         
         # Policía
-        if rol_usuario == SIMBOLO_ROL[0]:
-            # Policía y ladrón deben tener la misma posición, en el último paso del policía
+        if rol_usuario == ROL[0]:
             if jugador1 == jugador2: 
                 print("\n\t\tEL POLICÍA HA ATRAPADO AL LADRÓN. HA GANADO EL LADRÓN.\n")
                 msvcrt.getch()
@@ -144,7 +143,7 @@ while juego_en_curso:
             print(f"\nPasos disponibles: {pasos_disponibles}")
             movimiento = input("\nComputadora (WASD): ").lower()
             # Acá en sí debemos hacer que la PC se mueva por sí sola
-            mover_jugador(jugador2 if rol_computadora == SIMBOLO_ROL[1] else jugador1, movimiento)
+            mover_jugador(jugador2 if rol_computadora == ROL[1] else jugador1, movimiento)
             pasos_disponibles -= 1
             
             os.system("cls")

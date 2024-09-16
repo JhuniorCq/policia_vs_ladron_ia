@@ -13,9 +13,4 @@ JUGADOR = {
     "c": "Computadora"
 }
 
-SIMBOLO_ROL = "p", "l"
-
-ROL = {
-    "p": "policia",
-    "l": "ladron"
-}
+ROL = "p", "l"
