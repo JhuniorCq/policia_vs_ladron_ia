@@ -1,6 +1,6 @@
 import os, msvcrt, random
 from piedra_papel_tijera_probando import piedra_papel_tijera
-from constants import TABLERO, JUGADOR, SIMBOLO_ROL
+from constants import TABLERO, JUGADOR, SIMBOLO_ROL, CANTIDAD_CASAS
 
 # Dimensiones del tablero
 filas, columnas = TABLERO
@@ -16,6 +16,8 @@ def imprimir_tablero():
                 print("P", end=" ")
             elif [i, j] == jugador2:
                 print("L", end=" ")
+            elif [i, j] in posiciones_casas_robadas: # Creo que de ahí lo borraré
+                print("X", end=" ")
             elif [i, j] in posiciones_casas:
                 print("C", end=" ")
             else:
@@ -38,7 +40,9 @@ def realizar_pasos():
 
 def mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol):
     print(f"\n\t\tPOLICÍA VS LADRÓN -> Turno N°{cont_turnos}")
-    print(f"\n- Turno: {turno}\n- Opción escogida: {opcion}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == SIMBOLO_ROL[0] else "Ladrón"}\n")
+    print(f"\n- Turno: {turno}\n- Opción escogida: {opcion}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == SIMBOLO_ROL[0] else "Ladrón"}")
+    if rol == SIMBOLO_ROL[1]:
+        print(f"- Casas robadas: {posiciones_casas_robadas}\n")
     
     
 ######## FUNCIONES PARA LAS CASAS
@@ -50,7 +54,7 @@ def distancia_separacion(casa1, casa2):
 def generar_posiciones_casa():
     casas = []
     
-    while len(casas) < 7:
+    while len(casas) < CANTIDAD_CASAS:
         # Generar una posición aleatoria
         nueva_casa = [random.randint(0, filas-1), random.randint(0, columnas-1)]
         
@@ -68,7 +72,7 @@ def obtener_roles():
     rol_usuario = input("\n- Para ser policía escribe (p) y para ser ladrón escribe (l): ").lower()
     
     while rol_usuario not in SIMBOLO_ROL:
-        print("Elección no válida. Intenta de nuevo.")
+        print("\n\tElección no válida. Intenta de nuevo.")
         rol_usuario = input("\n- Para ser policía escribe (p) y para ser ladrón escribe (l): ").lower()
         
     rol_computadora = SIMBOLO_ROL[1] if rol_usuario == SIMBOLO_ROL[0] else SIMBOLO_ROL[0]
@@ -76,6 +80,7 @@ def obtener_roles():
     return rol_usuario, rol_computadora
 
 cont_turnos = 1
+posiciones_casas_robadas = []
 
 # Empezamos el juego
 
@@ -117,14 +122,22 @@ while juego_en_curso:
         if rol_usuario == SIMBOLO_ROL[0]:
             # Policía y ladrón deben tener la misma posición, en el último paso del policía
             if jugador1 == jugador2: 
-                print("\n\t\tEl policía ha atrapado al ladrón.")
+                print("\n\t\tEL POLICÍA HA ATRAPADO AL LADRÓN. HA GANADO EL LADRÓN.\n")
                 msvcrt.getch()
                 juego_en_curso = False
         # Ladrón
         else:
             if jugador2 in posiciones_casas:
-                print("\n\t\tSe ha robado una casa.")
+                print(f"\n\t\tSe ha robado una casa en {jugador2}.\n")
+                
+                casa_robada = jugador2
+                posiciones_casas_robadas.append(casa_robada.copy())
+
                 msvcrt.getch()
+                
+                if len(posiciones_casas_robadas) == CANTIDAD_CASAS:
+                    print("\n\t\tSE HAN ROBADO TODAS LAS CASAS. HA GANADO EL LADRÓN.")
+                    juego_en_curso = False
         
     else:
         while pasos_disponibles > 0:
@@ -144,4 +157,3 @@ while juego_en_curso:
 
 
 # TODO: Falta hacer lo que hará la PC cuando sea policía o ladrón (en el Usuario ya está avanzado gran parte)
-# TODO: Hacer que cuando el ladrón robe una casa, la casa se marque con X
