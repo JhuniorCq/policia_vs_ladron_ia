@@ -34,10 +34,6 @@ def mover_jugador(jugador, direccion):
     elif direccion == "d" and jugador[1] < columnas - 1:  # Derecha
         jugador[1] += 1
 
-##################
-def realizar_pasos():
-    pass
-
 def mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol):
     print(f"\n\t\tPOLICÍA VS LADRÓN -> Turno N°{cont_turnos}")
     print(f"\n- Turno: {turno}\n- Opción escogida: {opcion}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == ROL[0] else "Ladrón"}")
@@ -86,8 +82,8 @@ posiciones_casas_robadas = []
 
 # Acá se le debe preguntar al usuario que rol quiere ser
 rol_usuario, rol_computadora = obtener_roles()
-
 juego_en_curso = True
+
 
 while juego_en_curso:
     # Juego por turnos
@@ -116,9 +112,8 @@ while juego_en_curso:
             mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol_usuario)
             imprimir_tablero()
         
-        
         if rol_usuario == ROL[0]: # Policía
-            if posicion_policia == posicion_ladron: 
+            if posicion_policia == posicion_ladron:
                 print("\n\t\tEL POLICÍA HA ATRAPADO AL LADRÓN. HA GANADO EL POLICÍA.\n")
                 msvcrt.getch()
                 juego_en_curso = False
@@ -166,3 +161,5 @@ while juego_en_curso:
                     juego_en_curso = False
     
     cont_turnos += 1
+    
+# TODO: Hacer que no se pueda robar 2 veces la misma casa

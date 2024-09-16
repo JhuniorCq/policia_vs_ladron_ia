@@ -1,3 +1,5 @@
+OPCIONES = ["piedra", "papel", "tijera"]
+
 TABLERO = 25, 20 # Filas y Columnas
 
 CANTIDAD_CASAS = 7

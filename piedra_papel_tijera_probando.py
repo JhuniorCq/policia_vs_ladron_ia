@@ -1,18 +1,18 @@
 import random
-from constants import JUGADOR, PASOS, ROL
+from constants import JUGADOR, PASOS, ROL, OPCIONES
 
-opciones = ["piedra", "papel", "tijera"]
+# opciones = ["piedra", "papel", "tijera"]
 
 def obtener_eleccion_usuario(rol):
     eleccion = input(f"\n- ({"Policía" if rol == ROL[0] else "Ladrón"}) Elige piedra, papel o tijera: ").lower()
-    while eleccion not in opciones:
+    while eleccion not in OPCIONES:
         print("Elección no válida. Intenta de nuevo.")
         eleccion = input(f"\n- ({rol}) Elige piedra, papel o tijera: ").lower()
     
     return eleccion
 
 def obtener_eleccion_computadora():
-    return random.choice(opciones)
+    return random.choice(OPCIONES)
 
 def determinar_ganador(eleccion_usuario, eleccion_computadora):
     if eleccion_usuario == eleccion_computadora:
