@@ -134,7 +134,7 @@ while juego_en_curso:
         while pasos_disponibles > 0:
             print(f"\nPasos disponibles: {pasos_disponibles}")
             movimiento = input("\nComputadora (WASD): ").lower()
-            # Acá en sí debemos hacer que la PC se mueva por sí sola
+            
             mover_jugador(posicion_ladron if rol_computadora == ROL[1] else posicion_policia, movimiento)
             pasos_disponibles -= 1
             

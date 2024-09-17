@@ -1,8 +1,6 @@
 import random
 from constants import JUGADOR, PASOS, ROL, OPCIONES
 
-# opciones = ["piedra", "papel", "tijera"]
-
 def obtener_eleccion_usuario(rol):
     eleccion = input(f"\n- ({"Policía" if rol == ROL[0] else "Ladrón"}) Elige piedra, papel o tijera: ").lower()
     while eleccion not in OPCIONES:
