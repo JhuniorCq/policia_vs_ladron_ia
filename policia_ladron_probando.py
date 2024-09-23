@@ -42,9 +42,9 @@ def mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol):
     
     
 ######## FUNCIONES PARA LAS CASAS
-# Función para calcular la distancia de Manhattan entre dos puntos
-def distancia_separacion(casa1, casa2):
-    return abs(casa1[0] - casa2[0]) + abs(casa1[1] - casa2[1])
+# Función para calcular la distancia de Manhattan entre dos puntos (Distancia de Manhattam)
+def distancia_manhattan(pos1, pos2):
+    return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
 
 # Función para generar posiciones de las casitas
 def generar_posiciones_casa():
@@ -55,7 +55,7 @@ def generar_posiciones_casa():
         nueva_casa = [random.randint(0, filas-1), random.randint(0, columnas-1)]
         
         # Verificar que la nueva casita esté al menos a 5 casillas de Manhattan de las demás
-        if all(distancia_separacion(nueva_casa, casa) >= 5 for casa in casas) and nueva_casa != [0,0] and nueva_casa != [24,19]:
+        if all(distancia_manhattan(nueva_casa, casa) >= 5 for casa in casas) and nueva_casa != [0,0] and nueva_casa != [24,19]:
             casas.append(nueva_casa)
     
     return casas
