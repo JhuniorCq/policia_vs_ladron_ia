@@ -21,7 +21,6 @@ def determinar_ganador(eleccion_usuario, eleccion_computadora):
         (eleccion_usuario == "papel" and eleccion_computadora == "piedra"):
         print("\n\t\tHAS GANADO")
         return JUGADOR["u"], PASOS[eleccion_usuario], eleccion_usuario
-
     else:
         print("\n\t\tHA GANADO LA COMPUTADORA")
         return JUGADOR["c"], PASOS[eleccion_computadora], eleccion_computadora

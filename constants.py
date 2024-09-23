@@ -16,3 +16,8 @@ JUGADOR = {
 }
 
 ROL = "p", "l"
+
+ARRIBA = "w"
+ABAJO = "s"
+DERECHA = "d"
+IZQUIERDA = "a"
