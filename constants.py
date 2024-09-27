@@ -21,3 +21,5 @@ ARRIBA = "w"
 ABAJO = "s"
 DERECHA = "d"
 IZQUIERDA = "a"
+
+VALORES_DADO = [1, 2, 3, 4, 5, 6]
