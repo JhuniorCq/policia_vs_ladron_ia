@@ -1,5 +1,5 @@
 import os, msvcrt, random, heapq, time
-from piedra_papel_tijera_probando import piedra_papel_tijera
+# from piedra_papel_tijera_probando import piedra_papel_tijera
 from constants import TABLERO, JUGADOR, ROL, CANTIDAD_CASAS, ARRIBA, ABAJO, DERECHA, IZQUIERDA, VALORES_DADO
 
 # Dimensiones del tablero
@@ -34,9 +34,9 @@ def mover_jugador(jugador, direccion):
     elif direccion == DERECHA and jugador[1] < columnas - 1:  # Derecha
         jugador[1] += 1
 
-def mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol): 
+def mostrar_datos_turno(turno, pasos, cont_turnos, rol): 
     print(f"\n\t\tPOLICÍA VS LADRÓN -> Turno N°{cont_turnos}")
-    print(f"\n- Turno: {turno}\n- Opción escogida: {opcion}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == ROL[0] else "Ladrón"}")
+    print(f"\n- Turno: {turno}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == ROL[0] else "Ladrón"}")
     if rol == ROL[1]:
         print(f"- Casas robadas: {posiciones_casas_robadas}\n")
     
@@ -128,14 +128,13 @@ while juego_en_curso:
     print(f"\n\t\tLANZAR EL DADO (Turno: {turno})")
     pasos = lanzar_dado()
     print(f"\n\t- Pasos obtenidos: {pasos}")
-    opcion = "Ekide :v"
     
     msvcrt.getch()
     
     os.system("cls")
     
     # Acá podemos agregar el rol
-    mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol_usuario if turno == JUGADOR["u"] else rol_computadora)
+    mostrar_datos_turno(turno, pasos, cont_turnos, rol_usuario if turno == JUGADOR["u"] else rol_computadora)
     
     imprimir_tablero()
     
@@ -149,7 +148,7 @@ while juego_en_curso:
             pasos_disponibles -= 1
             
             os.system("cls")
-            mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol_usuario)
+            mostrar_datos_turno(turno, pasos, cont_turnos, rol_usuario)
             imprimir_tablero()
         else:
             print("\n\t\tPASOS TERMINADOS")
@@ -173,20 +172,24 @@ while juego_en_curso:
             print(f"\nPasos disponibles: {pasos_disponibles}")
             
             # El si el rol de la IA es ladrón debemos ver que casa está más cerca, y esa será la casa objetivo
-            if rol_computadora == ROL[0]:
+            if rol_computadora == ROL[0]: # Policía
                 # Uso del algoritmo Primero el Mejor para econtrar el mejor movimiento
                 nueva_posicion = movimiento_mejor_primero(posicion_policia, posicion_ladron)
                 posicion_policia = nueva_posicion
-            else:
-                # Obtenemos la casa más cercana al ladrón
+            else: # Ladrón
                 distancia_casas = []
                 
+                # En caso el policía esté muy cerca, el ladrón debe centrarse en escapar
+                # TODO: Obtener posición del policiía
+                # Dato: Una cosa es estar cerca al policía, y otra estar lejos del policía, pero estar cerca cuando me dirija a la casa más cercana
+                
+                # Obtenemos la casa más cercana al ladrón
                 for posicion_casa in posiciones_casas:
                     if posicion_casa in posiciones_casas_robadas:
                         continue
                         
-                    distancia = distancia_manhattan(posicion_ladron, posicion_casa)
-                    heapq.heappush(distancia_casas, (distancia, posicion_casa))
+                    distancia_casa = distancia_manhattan(posicion_ladron, posicion_casa)
+                    heapq.heappush(distancia_casas, (distancia_casa, posicion_casa))
                     
                 posicion_casa_cercana = heapq.heappop(distancia_casas)
                 
@@ -199,7 +202,7 @@ while juego_en_curso:
             time.sleep(0.5)
             
             os.system("cls")
-            mostrar_datos_turno(turno, pasos, opcion, cont_turnos, rol_computadora)
+            mostrar_datos_turno(turno, pasos, cont_turnos, rol_computadora)
             imprimir_tablero()
         else:
             print("\n\t\tPASOS TERMINADOS")
@@ -207,7 +210,6 @@ while juego_en_curso:
         if rol_computadora == ROL[0]: # Policía
             if posicion_policia == posicion_ladron:
                 print("\n\t\tEL POLICÍA HA ATRAPADO AL LADRÓN. HA GANADO EL POLICÍA.\n")
-                msvcrt.getch()
                 juego_en_curso = False
         else: # Ladrón
             if posicion_ladron in posiciones_casas and posicion_ladron not in posiciones_casas_robadas:
@@ -216,8 +218,6 @@ while juego_en_curso:
                 casa_robada = posicion_ladron.copy()
                 posiciones_casas_robadas.append(casa_robada)
 
-                msvcrt.getch()
-                
                 if len(posiciones_casas_robadas) == CANTIDAD_CASAS:
                     print("\n\t\tSE HAN ROBADO TODAS LAS CASAS. HA GANADO EL LADRÓN.\n")
                     juego_en_curso = False
