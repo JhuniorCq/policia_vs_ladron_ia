@@ -173,10 +173,26 @@ while juego_en_curso:
             print(f"\nPasos disponibles: {pasos_disponibles}")
             
             # El si el rol de la IA es ladrón debemos ver que casa está más cerca, y esa será la casa objetivo
-
-            # Uso del algoritmo Primero el Mejor para econtrar el mejor movimiento
-            nueva_posicion = movimiento_mejor_primero(posicion_policia, posicion_ladron)
-            posicion_policia = nueva_posicion
+            if rol_computadora == ROL[0]:
+                # Uso del algoritmo Primero el Mejor para econtrar el mejor movimiento
+                nueva_posicion = movimiento_mejor_primero(posicion_policia, posicion_ladron)
+                posicion_policia = nueva_posicion
+            else:
+                # Obtenemos la casa más cercana al ladrón
+                distancia_casas = []
+                
+                for posicion_casa in posiciones_casas:
+                    if posicion_casa in posiciones_casas_robadas:
+                        continue
+                        
+                    distancia = distancia_manhattan(posicion_ladron, posicion_casa)
+                    heapq.heappush(distancia_casas, (distancia, posicion_casa))
+                    
+                posicion_casa_cercana = heapq.heappop(distancia_casas)
+                
+                # Movimiento del ladrón a la casa más cercana
+                nueva_posicion = movimiento_mejor_primero(posicion_ladron, posicion_casa_cercana[1])
+                posicion_ladron = nueva_posicion
             
             pasos_disponibles -= 1
             
