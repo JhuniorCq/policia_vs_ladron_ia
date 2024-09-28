@@ -82,7 +82,7 @@ def lanzar_dado():
     return random.choice(VALORES_DADO)
 
 # Algoritmo Primero el Mejor
-def movimiento_mejor_primero(posicion_jugador, posicion_objetivo):
+def movimiento_mejor_primero(posicion_jugador, posicion_objetivo, rol):
     # Posibles direcciones de movimiento
     direcciones = {
         'w': (-1, 0),
@@ -93,22 +93,39 @@ def movimiento_mejor_primero(posicion_jugador, posicion_objetivo):
     
     # Lista de prioridad con heapq
     movimientos = []
+    movimientos_secundarios = []
 
     # Evaluamos cada movimiento posible
     for direccion, (dx, dy) in direcciones.items():
         nueva_posicion = [posicion_jugador[0] + dx, posicion_jugador[1] + dy]
         
+        distancia_actual_policia = distancia_manhattan(posicion_ladron, posicion_policia)
         # Aseguramos que la nueva posición esté dentro de los límites del tablero
         if 0 <= nueva_posicion[0] < filas and 0 <= nueva_posicion[1] < columnas:
-            # Calculamos la heurística (distancia al ladrón)
+            if rol == ROL[1]: # Ladrón
+                # Si la distancia de separación con el policía es de 4 casilleros
+                if distancia_actual_policia <= 5:
+                    distancia_nueva_policia = distancia_manhattan(nueva_posicion, posicion_policia)
+
+                    if distancia_nueva_policia <= distancia_actual_policia:
+                        distancia = distancia_manhattan(nueva_posicion, posicion_objetivo)
+                        heapq.heappush(movimientos_secundarios, (distancia, nueva_posicion, direccion))
+                        continue
+            
+            # Calculamos la heurística (distancia al ladrón / casa más cercana)
             distancia = distancia_manhattan(nueva_posicion, posicion_objetivo)
             
             # Añadimos la nueva posición a la lista de prioridades
             heapq.heappush(movimientos, (distancia, nueva_posicion, direccion))
     
-    # Retornamos el mejor movimiento (el de menor distancia) -> mejor_movimiento es una TUPLA
-    mejor_movimiento = heapq.heappop(movimientos)
-    return mejor_movimiento[1] # Nueva posición
+    if len(movimientos) != 0:
+        # Retornamos el mejor movimiento (el de menor distancia) -> mejor_movimiento es una TUPLA
+        mejor_movimiento = heapq.heappop(movimientos)
+        return mejor_movimiento[1] # Nueva posición
+    else:
+        mejor_movimiento = heapq.heappop(movimientos_secundarios)
+        return mejor_movimiento[1] # Nueva posición
+    
 
 cont_turnos = 1
 posiciones_casas_robadas = []
@@ -174,15 +191,16 @@ while juego_en_curso:
             # El si el rol de la IA es ladrón debemos ver que casa está más cerca, y esa será la casa objetivo
             if rol_computadora == ROL[0]: # Policía
                 # Uso del algoritmo Primero el Mejor para econtrar el mejor movimiento
-                nueva_posicion = movimiento_mejor_primero(posicion_policia, posicion_ladron)
+                nueva_posicion = movimiento_mejor_primero(posicion_policia, posicion_ladron, rol_computadora)
                 posicion_policia = nueva_posicion
             else: # Ladrón
-                distancia_casas = []
                 
                 # En caso el policía esté muy cerca, el ladrón debe centrarse en escapar
                 # TODO: Obtener posición del policiía
                 # Dato: Una cosa es estar cerca al policía, y otra estar lejos del policía, pero estar cerca cuando me dirija a la casa más cercana
+                # distancia_policia = distancia_manhattan(posicion_ladron, posicion_policia)
                 
+                distancia_casas = []
                 # Obtenemos la casa más cercana al ladrón
                 for posicion_casa in posiciones_casas:
                     if posicion_casa in posiciones_casas_robadas:
@@ -194,7 +212,7 @@ while juego_en_curso:
                 posicion_casa_cercana = heapq.heappop(distancia_casas)
                 
                 # Movimiento del ladrón a la casa más cercana
-                nueva_posicion = movimiento_mejor_primero(posicion_ladron, posicion_casa_cercana[1])
+                nueva_posicion = movimiento_mejor_primero(posicion_ladron, posicion_casa_cercana[1], rol_computadora)
                 posicion_ladron = nueva_posicion
             
             pasos_disponibles -= 1
