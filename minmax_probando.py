@@ -67,11 +67,7 @@ def minimax(profundidad, es_turno_policia, pasos_restantes, pos_policia, pos_lad
 # TODO: Lo que faltaría es que en "minimax", la función "funcion_evaluación()" EVALUÉ las posiciones futuras del ladrón y el policiía, ya que cada iteración dentro de "minimax" es una posible situación futura
 
 # Función de evaluación
-def funcion_evaluacion():
-    return distancia_manhattan(posicion_policia, posicion_ladron)
-
-# Función de evaluación
-def evaluar_tablero(pos_policia, pos_ladron):
+def funcion_evaluacion(pos_policia, pos_ladron):
     # Calculamos la distancia Manhattan entre el policía y el ladrón
     distancia = distancia_manhattan(pos_policia, pos_ladron)
 
