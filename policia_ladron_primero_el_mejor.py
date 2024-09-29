@@ -6,8 +6,8 @@ from constants import TABLERO, JUGADOR, ROL, CANTIDAD_CASAS, ARRIBA, ABAJO, DERE
 filas, columnas = TABLERO
 
 # Posiciones iniciales de los jugadores
-posicion_policia = [0, 0]  # Esquina superior izquierda / Policía
-posicion_ladron = [filas - 1, columnas - 1]  # Esquina inferior derecha / Ladrón
+posicion_policia = [0, 0]
+posicion_ladron = [filas - 1, columnas - 1]
 
 def imprimir_tablero():
     for i in range(filas):
@@ -27,12 +27,18 @@ def imprimir_tablero():
 def mover_jugador(jugador, direccion):
     if direccion == ARRIBA and jugador[0] > 0:  # Arriba
         jugador[0] -= 1
+        return True
     elif direccion == ABAJO and jugador[0] < filas - 1:  # Abajo
         jugador[0] += 1
+        return True
     elif direccion == IZQUIERDA and jugador[1] > 0:  # Izquierda
         jugador[1] -= 1
+        return True
     elif direccion == DERECHA and jugador[1] < columnas - 1:  # Derecha
         jugador[1] += 1
+        return True
+    else:
+        return False
 
 def mostrar_datos_turno(turno, pasos, cont_turnos, rol): 
     print(f"\n\t\tPOLICÍA VS LADRÓN -> Turno N°{cont_turnos}")
@@ -161,8 +167,10 @@ while juego_en_curso:
         while pasos_disponibles > 0:
             print(f"\nPasos disponibles: {pasos_disponibles}")
             movimiento = input("\nUsuario (WASD): ").lower()
-            mover_jugador(posicion_policia if rol_usuario == ROL[0] else posicion_ladron, movimiento)
-            pasos_disponibles -= 1
+            movida_valida = mover_jugador(posicion_policia if rol_usuario == ROL[0] else posicion_ladron, movimiento)
+            
+            if movida_valida:
+                pasos_disponibles -= 1
             
             os.system("cls")
             mostrar_datos_turno(turno, pasos, cont_turnos, rol_usuario)
