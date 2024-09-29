@@ -5,6 +5,7 @@ from algoritmos.primero_el_mejor import movimiento_mejor_primero
 from imprimir_tablero import imprimir_tablero
 from mover_jugador import mover_jugador
 from algoritmos.minimax import minimax
+from algoritmos.no_deterministica import no_deterministica
 
 def generar_posiciones_casa():
     casas = []
@@ -92,12 +93,13 @@ while juego_en_curso:
     
     pasos_disponibles = pasos
     
+    # Rol "Usuario"
     if turno == JUGADOR["u"]:
         # Realizar pasos
         while pasos_disponibles > 0:
             print(f"\nPasos disponibles: {pasos_disponibles}")
-            direccion = input("\nUsuario (WASD): ").lower()
-            movida_valida = mover_jugador(posicion_policia if rol_usuario == ROL[0] else posicion_ladron, direccion)
+            movimiento = input("\nUsuario (WASD): ").lower()
+            movida_valida = mover_jugador(posicion_policia if rol_usuario == ROL[0] else posicion_ladron, movimiento)
             
             if movida_valida:
                 pasos_disponibles -= 1
@@ -123,20 +125,28 @@ while juego_en_curso:
                 if len(posiciones_casas_robadas) == CANTIDAD_CASAS:
                     print("\n\t\tSE HAN ROBADO TODAS LAS CASAS. HA GANADO EL LADRÓN.\n")
                     juego_en_curso = False
-    else:
+                    
+    else: # Rol "Computadora"
         while pasos_disponibles > 0:
             print(f"\nPasos disponibles: {pasos_disponibles}")
-            
+
             # Rol "Policía"
             if rol_computadora == ROL[0]:
                 # Evaluamos la dificultad
                 if dificultad["nivel"] == DIFICULTAD["1"]["nivel"]:
                     # Búsqueda No Determinística
-                    pass
+                    movimiento = no_deterministica()
+                    
+                    # Ejecutamos el movimiento del Policía
+                    movida_valida = mover_jugador(posicion_policia, movimiento)
+                    
                 elif dificultad["nivel"] == DIFICULTAD["2"]["nivel"]:
                     # Algoritmo "Primero el Mejor"
-                    nueva_posicion = movimiento_mejor_primero(posicion_policia, posicion_ladron, rol_computadora, posicion_policia, posicion_ladron)
-                    posicion_policia = nueva_posicion
+                    mejor_movimiento = movimiento_mejor_primero(posicion_policia, posicion_ladron, rol_computadora, posicion_policia, posicion_ladron)
+                    
+                    # Ejecutamos el movimiento del Policía
+                    movida_valida = mover_jugador(posicion_policia, mejor_movimiento)
+                    
                 elif dificultad["nivel"] == DIFICULTAD["3"]["nivel"]:
                     # Algoritmo "Minimax" -> Policía "MIN" y Ladrón "MAX"
                     mejor_evaluacion = float("inf") # Queremos minimizar la distancia al ladrón
@@ -157,25 +167,57 @@ while juego_en_curso:
                             mejor_movimiento = direccion
                     
                     # Ejecutamos el mejor movimiento en la posición real del policía
-                    mover_jugador(posicion_policia, mejor_movimiento)
+                    movida_valida = mover_jugador(posicion_policia, mejor_movimiento)
+                
+                # Consumir un paso
+                if movida_valida: 
+                    pasos_disponibles -= 1
                     
             else: # Rol "Ladrón" -> Si la IA es "Ladrón" sí o sí usará "Primero el Mejor"
-                distancia_casas = []
-                # Obtenemos la casa más cercana al ladrón
-                for posicion_casa in posiciones_casas:
-                    if posicion_casa in posiciones_casas_robadas:
-                        continue
-                        
-                    distancia_casa = distancia_manhattan(posicion_ladron, posicion_casa)
-                    heapq.heappush(distancia_casas, (distancia_casa, posicion_casa))
+                if dificultad["nivel"] == DIFICULTAD["1"]["nivel"]:
+                    # Búsqueda No Determinística
+                    movimiento = no_deterministica()
                     
-                posicion_casa_cercana = heapq.heappop(distancia_casas)
+                    # Ejecutamos el movimiento del policía
+                    movida_valida = mover_jugador(posicion_ladron, movimiento)
+                    
+                elif dificultad["nivel"] == DIFICULTAD["2"]["nivel"]:
+                    # Algoritmo "Primero el Mejor"
+                    distancia_casas = []
+                    # Obtenemos la casa más cercana al ladrón
+                    for posicion_casa in posiciones_casas:
+                        if posicion_casa in posiciones_casas_robadas:
+                            continue
+                        
+                        distancia_casa = distancia_manhattan(posicion_ladron, posicion_casa)
+                        heapq.heappush(distancia_casas, (distancia_casa, posicion_casa))
+                        
+                    posicion_casa_cercana = heapq.heappop(distancia_casas)
+                    
+                    # Movimiento del ladrón a la casa más cercana
+                    mejor_movimiento = movimiento_mejor_primero(posicion_ladron, posicion_casa_cercana[1], rol_computadora, posicion_policia, posicion_ladron)
+                    movida_valida = mover_jugador(posicion_ladron, mejor_movimiento)
+                    
+                elif dificultad["nivel"] == DIFICULTAD["3"]["nivel"]:
+                    # Algoritmo "Minimax" (Por ahora repetiremos el "Primero el Mejor")
+                    distancia_casas = []
+                    # Obtenemos la casa más cercana al ladrón
+                    for posicion_casa in posiciones_casas:
+                        if posicion_casa in posiciones_casas_robadas:
+                            continue
+                        
+                        distancia_casa = distancia_manhattan(posicion_ladron, posicion_casa)
+                        heapq.heappush(distancia_casas, (distancia_casa, posicion_casa))
+                        
+                    posicion_casa_cercana = heapq.heappop(distancia_casas)
+                    
+                    # Movimiento del ladrón a la casa más cercana
+                    mejor_movimiento = movimiento_mejor_primero(posicion_ladron, posicion_casa_cercana[1], rol_computadora, posicion_policia, posicion_ladron)
+                    movida_valida = mover_jugador(posicion_ladron, mejor_movimiento)
                 
-                # Movimiento del ladrón a la casa más cercana
-                nueva_posicion = movimiento_mejor_primero(posicion_ladron, posicion_casa_cercana[1], rol_computadora, posicion_policia, posicion_ladron)
-                posicion_ladron = nueva_posicion
-            
-            pasos_disponibles -= 1
+                # Consumir un paso
+                if movida_valida:
+                    pasos_disponibles -= 1
             
             time.sleep(0.5)
             
