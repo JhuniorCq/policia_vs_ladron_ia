@@ -1,14 +1,8 @@
-OPCIONES = ["piedra", "papel", "tijera"]
-
-TABLERO = 25, 20 # Filas y Columnas
+TABLERO = 25, 20 # Filas y Columnas -> Borrar esto y borrar el archivo "policia_ladron.py"
+FILAS = 25
+COLUMNAS = 20
 
 CANTIDAD_CASAS = 7
-
-PASOS = {
-    "piedra": 7,
-    "tijera": 5,
-    "papel": 3
-}
 
 JUGADOR = {
     "u": "Usuario",
