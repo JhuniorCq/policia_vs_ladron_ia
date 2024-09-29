@@ -1,5 +1,5 @@
 import heapq
-from constants import FILAS, COLUMNAS, ROL
+from constantes import FILAS, COLUMNAS, ROL
 from distancia_manhattan import distancia_manhattan
 
 # Algoritmo Primero el Mejor

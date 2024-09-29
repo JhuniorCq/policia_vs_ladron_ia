@@ -1,38 +1,10 @@
 import os, msvcrt, random, heapq, time
-from constants import TABLERO, JUGADOR, ROL, CANTIDAD_CASAS, ARRIBA, ABAJO, DERECHA, IZQUIERDA, VALORES_DADO, FILAS, COLUMNAS
+from constantes import JUGADOR, ROL, CANTIDAD_CASAS, VALORES_DADO, FILAS, COLUMNAS, DIFICULTAD, ARRIBA, ABAJO, IZQUIERDA, DERECHA
 from distancia_manhattan import distancia_manhattan
 from algoritmos.primero_el_mejor import movimiento_mejor_primero
-
-def imprimir_tablero():
-    for i in range(FILAS):
-        for j in range(COLUMNAS):
-            if [i, j] == posicion_policia:
-                print("P", end=" ")
-            elif [i, j] == posicion_ladron:
-                print("L", end=" ")
-            elif [i, j] in posiciones_casas_robadas:
-                print("X", end=" ")
-            elif [i, j] in posiciones_casas:
-                print("C", end=" ")
-            else:
-                print(".", end=" ")
-        print()
-
-def mover_jugador(jugador, direccion):
-    if direccion == ARRIBA and jugador[0] > 0:  # Arriba
-        jugador[0] -= 1
-        return True
-    elif direccion == ABAJO and jugador[0] < FILAS - 1:  # Abajo
-        jugador[0] += 1
-        return True
-    elif direccion == IZQUIERDA and jugador[1] > 0:  # Izquierda
-        jugador[1] -= 1
-        return True
-    elif direccion == DERECHA and jugador[1] < COLUMNAS - 1:  # Derecha
-        jugador[1] += 1
-        return True
-    else:
-        return False
+from imprimir_tablero import imprimir_tablero
+from mover_jugador import mover_jugador
+from algoritmos.minimax import minimax
 
 def generar_posiciones_casa():
     casas = []
@@ -47,9 +19,9 @@ def generar_posiciones_casa():
     
     return casas
 
-def mostrar_datos_turno(turno, pasos, cont_turnos, rol): 
+def mostrar_datos_turno(turno, pasos, cont_turnos, rol, nivel, algoritmo): 
     print(f"\n\t\tPOLICÍA VS LADRÓN -> Turno N°{cont_turnos}")
-    print(f"\n- Turno: {turno}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == ROL[0] else "Ladrón"}")
+    print(f"\n- Dificultad: {nivel}\n- Algoritmo: {algoritmo}\n- Turno: {turno}\n- Pasos obtenidos: {pasos}\n- Rol: {"Policía" if rol == ROL[0] else "Ladrón"}")
     if rol == ROL[1]:
         print(f"- Casas robadas: {posiciones_casas_robadas}\n")
 
@@ -64,6 +36,16 @@ def obtener_roles():
     rol_computadora = ROL[1] if rol_usuario == ROL[0] else ROL[0]
     
     return rol_usuario, rol_computadora
+
+def escoger_dificultad():
+    print("\n\t- Escoge la dificultad del juego:\n\n\t\t- Fácil -> Presiona '1'\n\t\t- Medio -> Presiona '2'\n\t\t- Difícil -> Presiona '3'")
+    dificultad = input("\n\t\tEscoge: ")
+    
+    while dificultad not in DIFICULTAD.keys():
+        print("\n\t- Escoge la dificultad del juego:\n\n\t\t- Fácil -> Presiona '1'\n\t\t- Medio -> Presiona '2'\n\t\t- Difícil -> Presiona '3'")
+        dificultad = input("\n\t\tEscoge: ")
+        
+    return DIFICULTAD[dificultad]
 
 def definir_turno_inicial():
     return random.choice(list(JUGADOR.values()))
@@ -89,6 +71,9 @@ posiciones_casas_robadas = []
 # Indicador del inicio del juego
 juego_en_curso = True
 
+# Selección de dificultad
+dificultad = escoger_dificultad()
+
 # Obtención de roles
 rol_usuario, rol_computadora = obtener_roles()
 turno = definir_turno_inicial()
@@ -102,8 +87,8 @@ while juego_en_curso:
     msvcrt.getch()
     os.system("cls")
     
-    mostrar_datos_turno(turno, pasos, cont_turnos, rol_usuario if turno == JUGADOR["u"] else rol_computadora)
-    imprimir_tablero()
+    mostrar_datos_turno(turno, pasos, cont_turnos, rol_usuario if turno == JUGADOR["u"] else rol_computadora, dificultad["nivel"], dificultad["algoritmo"])
+    imprimir_tablero(posicion_policia, posicion_ladron, posiciones_casas, posiciones_casas_robadas)
     
     pasos_disponibles = pasos
     
@@ -111,15 +96,15 @@ while juego_en_curso:
         # Realizar pasos
         while pasos_disponibles > 0:
             print(f"\nPasos disponibles: {pasos_disponibles}")
-            movimiento = input("\nUsuario (WASD): ").lower()
-            movida_valida = mover_jugador(posicion_policia if rol_usuario == ROL[0] else posicion_ladron, movimiento)
+            direccion = input("\nUsuario (WASD): ").lower()
+            movida_valida = mover_jugador(posicion_policia if rol_usuario == ROL[0] else posicion_ladron, direccion)
             
             if movida_valida:
                 pasos_disponibles -= 1
             
             os.system("cls")
-            mostrar_datos_turno(turno, pasos, cont_turnos, rol_usuario)
-            imprimir_tablero()
+            mostrar_datos_turno(turno, pasos, cont_turnos, rol_usuario, dificultad["nivel"], dificultad["algoritmo"])
+            imprimir_tablero(posicion_policia, posicion_ladron, posiciones_casas, posiciones_casas_robadas)
         else:
             print("\n\t\tPASOS TERMINADOS")
         
@@ -144,10 +129,37 @@ while juego_en_curso:
             
             # Rol "Policía"
             if rol_computadora == ROL[0]:
-                # Uso del algoritmo Primero el Mejor para econtrar el mejor movimiento
-                nueva_posicion = movimiento_mejor_primero(posicion_policia, posicion_ladron, rol_computadora, posicion_policia, posicion_ladron)
-                posicion_policia = nueva_posicion
-            else: # Rol "Ladrón"
+                # Evaluamos la dificultad
+                if dificultad["nivel"] == DIFICULTAD["1"]["nivel"]:
+                    # Búsqueda No Determinística
+                    pass
+                elif dificultad["nivel"] == DIFICULTAD["2"]["nivel"]:
+                    # Algoritmo "Primero el Mejor"
+                    nueva_posicion = movimiento_mejor_primero(posicion_policia, posicion_ladron, rol_computadora, posicion_policia, posicion_ladron)
+                    posicion_policia = nueva_posicion
+                elif dificultad["nivel"] == DIFICULTAD["3"]["nivel"]:
+                    # Algoritmo "Minimax" -> Policía "MIN" y Ladrón "MAX"
+                    mejor_evaluacion = float("inf") # Queremos minimizar la distancia al ladrón
+                    mejor_movimiento = None
+                    
+                    # Probar cada dirección posible
+                    for direccion in [ARRIBA, ABAJO, IZQUIERDA, DERECHA]:
+                        posicion_ladron_temp = posicion_ladron.copy()
+                        posicion_policia_temp = posicion_policia.copy() # Hacemos una copia temporal
+                        mover_jugador(posicion_policia_temp, direccion) # Simulamos mover en esa dirección
+                        
+                        # Evaluamos la jugada usando minimax
+                        evaluacion = minimax(3, False, posicion_policia_temp, posicion_ladron_temp)
+                        
+                        # Si la evaluación es mejor, actualizamos el mejor movimiento
+                        if evaluacion < mejor_evaluacion:
+                            mejor_evaluacion = evaluacion
+                            mejor_movimiento = direccion
+                    
+                    # Ejecutamos el mejor movimiento en la posición real del policía
+                    mover_jugador(posicion_policia, mejor_movimiento)
+                    
+            else: # Rol "Ladrón" -> Si la IA es "Ladrón" sí o sí usará "Primero el Mejor"
                 distancia_casas = []
                 # Obtenemos la casa más cercana al ladrón
                 for posicion_casa in posiciones_casas:
@@ -168,8 +180,8 @@ while juego_en_curso:
             time.sleep(0.5)
             
             os.system("cls")
-            mostrar_datos_turno(turno, pasos, cont_turnos, rol_computadora)
-            imprimir_tablero()
+            mostrar_datos_turno(turno, pasos, cont_turnos, rol_computadora, dificultad["nivel"], dificultad["algoritmo"])
+            imprimir_tablero(posicion_policia, posicion_ladron, posiciones_casas, posiciones_casas_robadas)
         else:
             print("\n\t\tPASOS TERMINADOS")
 
