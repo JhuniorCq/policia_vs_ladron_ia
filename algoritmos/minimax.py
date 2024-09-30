@@ -26,7 +26,7 @@ def minimax(profundidad, rol, pos_policia, pos_ladron):
         for direccion in [ARRIBA, ABAJO, IZQUIERDA, DERECHA]:
             pos_policia_temp = pos_policia.copy() # Copia temporal del policía
             mover_jugador(pos_policia_temp, direccion) # Simulamos el movimiento
-            evaluacion = minimax(profundidad - 1, False, pos_policia_temp, pos_ladron)
+            evaluacion = minimax(profundidad - 1, ROL[1], pos_policia_temp, pos_ladron)
             mejor_evaluacion = min(mejor_evaluacion, evaluacion) # Tomamos la mejor evaluación
         return mejor_evaluacion
     else:
@@ -35,6 +35,6 @@ def minimax(profundidad, rol, pos_policia, pos_ladron):
         for direccion in [ARRIBA, ABAJO, IZQUIERDA, DERECHA]:
             pos_ladron_temp = pos_ladron.copy() # Copia temporal del ladrón
             mover_jugador(pos_ladron_temp, direccion) # Simulamos el movimiento
-            evaluacion = minimax(profundidad - 1, True, pos_policia, pos_ladron_temp)
+            evaluacion = minimax(profundidad - 1, ROL[0], pos_policia, pos_ladron_temp)
             mejor_evaluacion = max(mejor_evaluacion, evaluacion) # Tomamos la mejor evaluación
         return mejor_evaluacion
