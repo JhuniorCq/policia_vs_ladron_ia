@@ -1,5 +1,5 @@
 from distancia_manhattan import distancia_manhattan
-from constantes import ARRIBA, ABAJO, IZQUIERDA, DERECHA
+from constantes import ARRIBA, ABAJO, IZQUIERDA, DERECHA, ROL
 from mover_jugador import mover_jugador
 
 # Función de evaluación
@@ -15,12 +15,12 @@ def funcion_evaluacion(pos_policia, pos_ladron):
     return distancia  # Queremos minimizar la distancia entre ellos
 
 # Algoritmo minimax
-def minimax(profundidad, es_turno_policia, pos_policia, pos_ladron):
+def minimax(profundidad, rol, pos_policia, pos_ladron):
     # Caso base: Llegamos a la profundidad 0 o el Policiía atrapó al ladrón
     if profundidad == 0 or pos_policia == pos_ladron:
         return funcion_evaluacion(pos_policia, pos_ladron) # Se evalúa la situación actual
     
-    if es_turno_policia:
+    if rol == ROL[0]:
         mejor_evaluacion = float("inf") # El Policía quiere minimizar
         
         for direccion in [ARRIBA, ABAJO, IZQUIERDA, DERECHA]:
