@@ -19,15 +19,15 @@ VALORES_DADO = [1, 2, 3, 4, 5, 6]
 
 DIFICULTAD = {
     "1": {
-        "nivel": "Fácil",
+        "nivel": "Principiante",
         "algoritmo": "No Determinístico",
     },
     "2": {
-        "nivel": "Medio",
+        "nivel": "Normal",
         "algoritmo": "Primero el Mejor"
     },
     "3": {
-        "nivel": "Difícil",
+        "nivel": "Experto",
         "algoritmo": "Minimax"
     }
 }

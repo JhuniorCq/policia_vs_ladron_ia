@@ -28,7 +28,7 @@ def mostrar_datos_turno(turno, pasos, cont_turnos, rol, nivel, algoritmo):
 
 def obtener_roles():
     print("\n\t\tESCOGE TU ROL")
-    rol_usuario = input("\n- Para ser policía escribe (p) y para ser ladrón escribe (l): ").lower()
+    rol_usuario = input("\n- Policía (p) / Ladrón (l): ").lower()
     
     while rol_usuario not in ROL:
         print("\n\tElección no válida. Intenta de nuevo.")
@@ -39,7 +39,7 @@ def obtener_roles():
     return rol_usuario, rol_computadora
 
 def escoger_dificultad():
-    print("\n\t- Escoge la dificultad del juego:\n\n\t\t- Fácil -> Presiona '1'\n\t\t- Medio -> Presiona '2'\n\t\t- Difícil -> Presiona '3'")
+    print("\n\t- Escoge la dificultad del juego:\n\n\t\t- Principiante -> Presiona '1'\n\t\t- Normal -> Presiona '2'\n\t\t- Experto -> Presiona '3'")
     dificultad = input("\n\t\tEscoge: ")
     
     while dificultad not in DIFICULTAD.keys():
@@ -93,7 +93,7 @@ while juego_en_curso:
     
     pasos_disponibles = pasos
     
-    # Rol "Usuario"
+    # Turno "Usuario"
     if turno == JUGADOR["u"]:
         # Realizar pasos
         while pasos_disponibles > 0:
@@ -126,7 +126,7 @@ while juego_en_curso:
                     print("\n\t\tSE HAN ROBADO TODAS LAS CASAS. HA GANADO EL LADRÓN.\n")
                     juego_en_curso = False
                     
-    else: # Rol "Computadora"
+    else: # Turno "Computadora"
         while pasos_disponibles > 0:
             print(f"\nPasos disponibles: {pasos_disponibles}")
 
