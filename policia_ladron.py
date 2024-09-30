@@ -200,50 +200,9 @@ while juego_en_curso:
                     movida_valida = mover_jugador(posicion_ladron, mejor_movimiento)
                     
                 elif dificultad["nivel"] == DIFICULTAD["3"]["nivel"]:
-                    # Algoritmo "Minimax" (Por ahora repetiremos el "Primero el Mejor")
-                    
-                    ####################################
-                    # # PROBANDO MINIMAX PARA EL LADRÓN
-                    # mejor_evaluacion = float("inf") # Queremos minimizar la distancia a una casa
-                    # mejor_movimiento = None
-                    
-                    # # Obtenemos la casa más cercana al ladrón
-                    # distancia_casas = []
-                    
-                    # for posicion_casa in posiciones_casas:
-                    #     if posicion_casa in posiciones_casas_robadas:
-                    #         continue
-                    
-                    #     distancia_casa = distancia_manhattan(posicion_ladron, posicion_casa)
-                    #     heapq.heappush(distancia_casas, (distancia_casa, posicion_casa))
-                    
-                    # posicion_casa_cercana = heapq.heappop(distancia_casas)
-                    
-                    # # Movimiento del ladrón a la casa más cercana
-                    # # Probar cada dirección posible
-                    # for direccion in [ARRIBA, ABAJO, IZQUIERDA, DERECHA]:
-                    #     posicion_policia_temp = posicion_policia.copy()
-                    #     posicion_ladron_temp = posicion_ladron.copy()
-                    #     mover_jugador(posicion_ladron_temp, direccion) # Simulamos mover en esa direccion
-                        
-                    #     ##### Acá vamos a evaluar si el ladrón está cerca al policía
-                    #     distancia_actual_policia = distancia_manhattan(posicion_ladron, posicion_policia)
-                        
-                    #     if distancia_actual_policia <= 5:
-                    #         distancia_nueva_policia = distancia_manhattan(posicion_ladron_temp, posicion_policia)
-                            
-                    #         if distancia_nueva_policia <= distancia_actual_policia:
-                    #             pass
-                            
-                    #     #####
-                        
-                    #     # Evaluamos la jugada usando minimax
-                    #     evaluacion = minimax(3, ROL[0], posicion_policia_temp, posicion_ladron_temp)
-                    
-                    #####################################
+                    # Obtenemos la casa más cercana al ladrón
                     distancia_casas = []
                     
-                    # Obtenemos la casa más cercana al ladrón
                     for posicion_casa in posiciones_casas:
                         if posicion_casa in posiciones_casas_robadas:
                             continue
