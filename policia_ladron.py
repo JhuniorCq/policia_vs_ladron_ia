@@ -226,6 +226,17 @@ while juego_en_curso:
                     #     posicion_ladron_temp = posicion_ladron.copy()
                     #     mover_jugador(posicion_ladron_temp, direccion) # Simulamos mover en esa direccion
                         
+                    #     ##### Acá vamos a evaluar si el ladrón está cerca al policía
+                    #     distancia_actual_policia = distancia_manhattan(posicion_ladron, posicion_policia)
+                        
+                    #     if distancia_actual_policia <= 5:
+                    #         distancia_nueva_policia = distancia_manhattan(posicion_ladron_temp, posicion_policia)
+                            
+                    #         if distancia_nueva_policia <= distancia_actual_policia:
+                    #             pass
+                            
+                    #     #####
+                        
                     #     # Evaluamos la jugada usando minimax
                     #     evaluacion = minimax(3, ROL[0], posicion_policia_temp, posicion_ladron_temp)
                     
