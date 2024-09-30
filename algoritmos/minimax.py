@@ -4,12 +4,12 @@ from mover_jugador import mover_jugador
 
 # Función de evaluación
 def funcion_evaluacion(pos_policia, pos_ladron):
-    # Calculamos la distancia Manhattan entre el policía y el ladrón
-    distancia = distancia_manhattan(pos_policia, pos_ladron)
-
     # Si el policía atrapa al ladrón, devolvemos un puntaje muy bajo (victoria del policía)
     if pos_policia == pos_ladron:
         return -1000  # Victoria para el policía
+    
+    # Calculamos la distancia Manhattan entre el policía y el ladrón
+    distancia = distancia_manhattan(pos_policia, pos_ladron)
 
     # Si el ladrón aún está libre, devolvemos la distancia como evaluación
     return distancia  # Queremos minimizar la distancia entre ellos

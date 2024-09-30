@@ -184,6 +184,7 @@ while juego_en_curso:
                 elif dificultad["nivel"] == DIFICULTAD["2"]["nivel"]:
                     # Algoritmo "Primero el Mejor"
                     distancia_casas = []
+                    
                     # Obtenemos la casa más cercana al ladrón
                     for posicion_casa in posiciones_casas:
                         if posicion_casa in posiciones_casas_robadas:
@@ -201,6 +202,7 @@ while juego_en_curso:
                 elif dificultad["nivel"] == DIFICULTAD["3"]["nivel"]:
                     # Algoritmo "Minimax" (Por ahora repetiremos el "Primero el Mejor")
                     distancia_casas = []
+                    
                     # Obtenemos la casa más cercana al ladrón
                     for posicion_casa in posiciones_casas:
                         if posicion_casa in posiciones_casas_robadas:
